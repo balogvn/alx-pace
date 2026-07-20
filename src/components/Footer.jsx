@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Moon, RotateCcw, Sun } from 'lucide-react'
+import ReminderToggle from './ReminderToggle'
 
 /**
  * Footer: theme toggle + a discreet-but-accessible, confirm-guarded
@@ -10,7 +11,8 @@ export default function Footer({ theme, onToggleTheme, onReset }) {
 
   return (
     <footer className="mt-8 space-y-3 pb-2 text-center">
-      <div className="flex items-center justify-center">
+      <div className="flex flex-wrap items-center justify-center gap-2">
+        <ReminderToggle />
         <button
           type="button"
           onClick={onToggleTheme}

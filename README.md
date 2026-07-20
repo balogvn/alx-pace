@@ -70,6 +70,27 @@ browser left off.
 
 ---
 
+## 🔔 Weekly reminders
+
+Learners can opt in via **Enable weekly reminders** in the footer. Two delivery
+modes, best available wins:
+
+1. **Local (zero infrastructure, on by default)** — Periodic Background Sync: the
+   service worker wakes and shows the learner's latest status ("Week 3 — 2 graded
+   items due") composed from data mirrored on-device. No data leaves the phone.
+   Chromium on Android/desktop; installed app recommended.
+2. **True Web Push (dormant until activated)** — works with the app fully closed,
+   including iOS 16.4+ home-screen installs. Everything is wired: VAPID keys live
+   as repo secrets, [`push/worker.js`](push/worker.js) is a ready-to-paste
+   Cloudflare Worker (KV-backed subscription store), and
+   [`.github/workflows/remind.yml`](.github/workflows/remind.yml) sends every
+   Monday 08:00 WAT via [`scripts/send-reminders.mjs`](scripts/send-reminders.mjs).
+   Activation steps are documented in
+   [`src/lib/pushConfig.js`](src/lib/pushConfig.js) — deploy the worker, paste its
+   URL, done. Until then the workflow exits as a no-op.
+
+---
+
 ## How the data works (deterministic by design)
 
 This project applies the **Deterministic Tool & Data Normalization** principle: the

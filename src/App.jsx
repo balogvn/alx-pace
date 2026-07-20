@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { SCHEDULE, getWeek } from './lib/schedule'
 import { computePacing, progressPercent } from './lib/pacing'
 import { computePaceStatus } from './lib/paceStatus'
+import { saveReminderState } from './lib/reminderStore'
 import { useLearnerProfile } from './hooks/useLearnerProfile'
 import { useTheme } from './hooks/useTheme'
 
@@ -63,6 +64,20 @@ export default function App() {
     () => computePaceStatus(SCHEDULE, completedSet, pacing),
     [completedSet, pacing],
   )
+
+  // Mirror a pre-composed reminder message into IndexedDB so the service
+  // worker can show it as a notification while the app is closed.
+  useEffect(() => {
+    if (status !== 'active' || !paceStatus) return
+    const s = paceStatus
+    const body =
+      s.status === 'behind'
+        ? `${s.behindCount} ${s.behindCount === 1 ? 'lesson' : 'lessons'} to catch up · ${s.gradedLeft} graded due this week.`
+        : s.gradedLeft > 0
+          ? `${s.gradedLeft} graded ${s.gradedLeft === 1 ? 'item' : 'items'} due this week — keep your pace.`
+          : `You're on track — ${s.weekTotal - s.weekDone} ${s.weekTotal - s.weekDone === 1 ? 'lesson' : 'lessons'} left this week.`
+    saveReminderState({ title: `ALX Pace — Week ${s.week} of ${s.totalWeeks}`, body })
+  }, [status, paceStatus])
 
   // Installed-app icon badge: how many items are left in the current week.
   // Supported on Android/desktop Chromium and iOS 16.4+ home-screen apps;
