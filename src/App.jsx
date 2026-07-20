@@ -3,6 +3,7 @@ import { SCHEDULE, getWeek } from './lib/schedule'
 import { computePacing, progressPercent } from './lib/pacing'
 import { computePaceStatus } from './lib/paceStatus'
 import { saveReminderState } from './lib/reminderStore'
+import { trackAppOpen, trackPacingDaily } from './lib/analytics'
 import { useLearnerProfile } from './hooks/useLearnerProfile'
 import { useTheme } from './hooks/useTheme'
 
@@ -64,6 +65,14 @@ export default function App() {
     () => computePaceStatus(SCHEDULE, completedSet, pacing),
     [completedSet, pacing],
   )
+
+  // Anonymous usage tallies (no-ops until GOATCOUNTER_SITE is configured).
+  useEffect(() => {
+    trackAppOpen()
+  }, [])
+  useEffect(() => {
+    trackPacingDaily(paceStatus)
+  }, [paceStatus])
 
   // Mirror a pre-composed reminder message into IndexedDB so the service
   // worker can show it as a notification while the app is closed.

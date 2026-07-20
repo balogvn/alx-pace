@@ -91,6 +91,18 @@ modes, best available wins:
 
 ---
 
+## 📊 Anonymous usage stats (dormant until configured)
+
+[`src/lib/analytics.js`](src/lib/analytics.js) can report aggregate, cookieless
+tallies to a free [GoatCounter](https://www.goatcounter.com) site: app opens,
+installed-vs-browser, and a once-per-device-per-day week-number / pacing-status
+event — bare numbers only, never anything identifying a learner. Do Not Track and
+Global Privacy Control are honored, and no third-party script runs (plain GET
+beacons). Off by default: set `GOATCOUNTER_SITE` in
+[`src/lib/analyticsConfig.js`](src/lib/analyticsConfig.js) to activate.
+
+---
+
 ## How the data works (deterministic by design)
 
 This project applies the **Deterministic Tool & Data Normalization** principle: the
