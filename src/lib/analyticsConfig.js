@@ -18,4 +18,4 @@
  * Tracking is skipped entirely for browsers signalling Do Not Track or
  * Global Privacy Control.
  */
-export const GOATCOUNTER_SITE = ''
+export const GOATCOUNTER_SITE = 'alxpace'
