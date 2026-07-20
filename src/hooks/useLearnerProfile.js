@@ -1,0 +1,96 @@
+import { useCallback, useMemo } from 'react'
+import { useLocalStorage } from './useLocalStorage'
+import { SCHEDULE } from '../lib/schedule'
+
+/**
+ * Zero-login learner profile persisted entirely in localStorage.
+ *
+ * Storage key contract (exactly as specified):
+ *   - learnerName       (string,  default "ALX Tech Fellow")
+ *   - startDate         (ISO date string, e.g. "2026-01-15")
+ *   - completedLessons  (JSON array of lesson ids)
+ */
+
+export const DEFAULT_NAME = 'ALX Tech Fellow'
+
+const KEY_NAME = 'learnerName'
+const KEY_START = 'startDate'
+const KEY_COMPLETED = 'completedLessons'
+
+// Only ids that still exist in the bundled schedule are valid — protects
+// completedLessons if the curriculum is ever re-versioned.
+const VALID_IDS = new Set(SCHEDULE.lessons.map((l) => l.id))
+
+export function useLearnerProfile() {
+  const [learnerName, setLearnerName] = useLocalStorage(KEY_NAME, DEFAULT_NAME, { raw: true })
+  const [startDate, setStartDate] = useLocalStorage(KEY_START, '', { raw: true })
+  const [completedRaw, setCompletedRaw] = useLocalStorage(KEY_COMPLETED, [])
+
+  // Guardrail: coerce whatever is in storage into a clean, deduplicated array
+  // of known ids, so the visible count can never disagree with the percent.
+  const completedLessons = useMemo(() => {
+    const list = Array.isArray(completedRaw) ? completedRaw : []
+    return Array.from(new Set(list.filter((id) => VALID_IDS.has(id))))
+  }, [completedRaw])
+
+  const completedSet = useMemo(() => new Set(completedLessons), [completedLessons])
+
+  const toggleLesson = useCallback(
+    (id) => {
+      if (!VALID_IDS.has(id)) return
+      setCompletedRaw((prev) => {
+        const list = Array.isArray(prev) ? prev : []
+        return list.includes(id) ? list.filter((x) => x !== id) : [...list, id]
+      })
+    },
+    [setCompletedRaw],
+  )
+
+  const setLessonsCompleted = useCallback(
+    (ids, completed) => {
+      const target = new Set(ids.filter((id) => VALID_IDS.has(id)))
+      setCompletedRaw((prev) => {
+        const list = new Set(Array.isArray(prev) ? prev : [])
+        for (const id of target) {
+          if (completed) list.add(id)
+          else list.delete(id)
+        }
+        return Array.from(list)
+      })
+    },
+    [setCompletedRaw],
+  )
+
+  const updateName = useCallback(
+    (name) => {
+      const trimmed = (name || '').trim()
+      setLearnerName(trimmed || DEFAULT_NAME)
+    },
+    [setLearnerName],
+  )
+
+  const updateStartDate = useCallback(
+    (iso) => {
+      setStartDate(iso || '')
+    },
+    [setStartDate],
+  )
+
+  const resetProfile = useCallback(() => {
+    setLearnerName(DEFAULT_NAME)
+    setStartDate('')
+    setCompletedRaw([])
+  }, [setLearnerName, setStartDate, setCompletedRaw])
+
+  return {
+    learnerName,
+    startDate,
+    completedLessons,
+    completedSet,
+    updateName,
+    updateStartDate,
+    toggleLesson,
+    setLessonsCompleted,
+    resetProfile,
+  }
+}

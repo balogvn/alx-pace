@@ -1,0 +1,128 @@
+import { useState } from 'react'
+import { CheckCircle2, ChevronDown, CircleDot, ListChecks } from 'lucide-react'
+import LessonRow from './LessonRow'
+
+/**
+ * Full curriculum browser: every module → week → lesson, collapsible, with the
+ * learner's current week expanded and flagged by default.
+ */
+export default function WeekAccordion({ schedule, completedSet, currentWeek, onToggle, onSetWeek }) {
+  const [openWeeks, setOpenWeeks] = useState(() => new Set([currentWeek]))
+
+  const toggleWeek = (weekNumber) => {
+    setOpenWeeks((prev) => {
+      const next = new Set(prev)
+      if (next.has(weekNumber)) next.delete(weekNumber)
+      else next.add(weekNumber)
+      return next
+    })
+  }
+
+  return (
+    <section aria-label="Full curriculum" className="space-y-5">
+      <div className="flex items-center gap-2 px-1">
+        <ListChecks size={18} className="text-cobalt-600 dark:text-lime" aria-hidden="true" />
+        <h2 className="text-sm font-bold uppercase tracking-wide">Full 14-Week Roadmap</h2>
+      </div>
+
+      {schedule.modules.map((module) => (
+        <div key={module.code} className="space-y-2">
+          <div className="flex items-baseline justify-between gap-2 px-1">
+            <h3 className="text-sm font-bold">
+              <span className="text-cobalt-600 dark:text-lime">{module.code}</span>{' '}
+              <span className="text-ink dark:text-paper">{module.title}</span>
+            </h3>
+            <span className="flex-none text-xs font-medium text-ink-mute dark:text-paper/65">
+              {module.weekStart === module.weekEnd
+                ? `Week ${module.weekStart}`
+                : `Weeks ${module.weekStart}–${module.weekEnd}`}
+            </span>
+          </div>
+
+          {module.weeks.map((week) => {
+            const isOpen = openWeeks.has(week.week)
+            const isCurrent = week.week === currentWeek
+            const done = week.lessons.filter((l) => completedSet.has(l.id)).length
+            const total = week.lessons.length
+            const allDone = total > 0 && done === total
+            const panelId = `week-panel-${week.week}`
+
+            return (
+              <div
+                key={week.week}
+                className={`alx-card overflow-hidden !p-0 ${isCurrent ? 'ring-2 ring-lime' : ''}`}
+              >
+                <button
+                  type="button"
+                  onClick={() => toggleWeek(week.week)}
+                  aria-expanded={isOpen}
+                  aria-controls={panelId}
+                  className="flex w-full items-center gap-3 p-3.5 text-left"
+                >
+                  <span
+                    className={`flex h-8 w-8 flex-none items-center justify-center rounded-lg text-xs font-bold ${
+                      allDone
+                        ? 'bg-alxgreen text-navy-900'
+                        : isCurrent
+                          ? 'bg-lime text-navy-900'
+                          : 'bg-navy-900/5 text-ink-soft dark:bg-white/10 dark:text-paper/75'
+                    }`}
+                  >
+                    {allDone ? <CheckCircle2 size={18} aria-hidden="true" /> : week.week}
+                  </span>
+
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2">
+                      <p className="truncate text-sm font-bold">{week.weekLabel}</p>
+                      {isCurrent && (
+                        <span className="alx-chip flex-none bg-lime-300 text-navy-900">
+                          <CircleDot size={11} aria-hidden="true" /> Current
+                        </span>
+                      )}
+                    </div>
+                    <p className="truncate text-xs text-ink-soft dark:text-paper/70">
+                      {done}/{total} done
+                      {week.gradedItems.length > 0 && ` · ${week.gradedItems.length} graded`}
+                    </p>
+                  </div>
+
+                  <ChevronDown
+                    size={18}
+                    className={`flex-none text-ink-mute transition-transform dark:text-paper/60 ${
+                      isOpen ? 'rotate-180' : ''
+                    }`}
+                    aria-hidden="true"
+                  />
+                </button>
+
+                {isOpen && (
+                  <div id={panelId} className="border-t border-navy-900/10 px-2 py-2 dark:border-white/10">
+                    <ul className="space-y-0.5">
+                      {week.lessons.map((lesson) => (
+                        <LessonRow
+                          key={lesson.id}
+                          lesson={lesson}
+                          checked={completedSet.has(lesson.id)}
+                          onToggle={onToggle}
+                        />
+                      ))}
+                    </ul>
+                    <div className="flex justify-end px-2 pb-1 pt-1">
+                      <button
+                        type="button"
+                        onClick={() => onSetWeek(week.lessons.map((l) => l.id), !allDone)}
+                        className="inline-flex min-h-[44px] items-center rounded-lg px-3 text-xs font-semibold text-cobalt-600 hover:bg-cobalt/10 dark:text-lime dark:hover:bg-lime/10"
+                      >
+                        {allDone ? 'Clear this week' : 'Mark week complete'}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )
+          })}
+        </div>
+      ))}
+    </section>
+  )
+}
