@@ -1,0 +1,44 @@
+Self Paced Data Analytics Track Content (Broken down in weeks),,,,
+Module,Week,Lessons,"Check Your Understanding
+Not Graded","Evaluation quiz
+ Graded Test"
+DA-1: Data and AI Literacy Foundation,Week 1,Welcome to the Data Analytics Program!,End of Module: Welcome to the Data Analytics Program!,
+,,Introduction to Data and AI Literacy Foundations,End of Module: Introduction to Data and AI Literacy Foundations,
+,,An Introduction to Data and Data Analytics,Check Your Understanding: Introduction to Data and Data Analytics,
+,,Ways of Work,Check Your Understanding: Ways of Work,Graded Test: Ways of Work
+,,Generative AI in Data Practice,Check Your Understanding: Generative AI in Data Practice,Graded Test: Generative AI In Data Practice
+,Week 2,Problem Solving,Check Your Understanding: Problem Solving,Graded Test: Problem Solving
+,,Programmatic Thinking,Check Your Understanding: Programmatic Thinking,Graded Test: Programmatic Thinking
+,,,,
+DA-2: Data Analytics with Spreadsheets,Week 3,Introduction to Data Analytics with Spreadsheets,,
+,,AI in Spreadsheets Workflow,Check Your Understanding: AI in Spreadsheets Workflow ,
+,,Preparing Data for Analysis,Check Your Understanding: Preparing Data for Analysis    ,Graded Test: Preparing Data for Analysis
+,,Descriptive Analysis and Visualization,Check Your Understanding: Descriptive Analysis and Visualization,"Integrated Project – Access to Drinking Water: Part 1 – Understanding the Data
+Graded Test: Understanding the Data"
+,Week 4,Data Cleaning and Integrity,Check Your Understanding: Data Cleaning and Integrity,Graded Test: Data Cleaning and Integrity
+,,Spreadsheet Functions and Distributions,Check Your Understanding: Spreadsheet Functions and Distributions,"Integrated Project – Access to Drinking Water: Part 2 – Transforming the Data
+Graded Test: Transforming the Data"
+,Week 5,Statistical Reasoning and Hypothesis Testing,Check Your Understanding: Statistical Reasoning and Hypothesis Testing   ,Graded Exam: Data Analytics with Spreadsheets
+,,,,
+DA-3: SQL for Data Analytics,Week 6,Introduction to SQL for Data Analytics,End of Module: Introduction to SQL for Data Analytics,
+,,SQL Foundations,Check Your Understanding: Querying with SQL,"Integrated Project: Beginning Our Data-Driven Journey in Maji Ndogo (Part 1)
+Graded Test: Integrated Project - Maji Ndogo - Part 1"
+,Week 7,SQL for Analysis and Functions,Check Your Understanding: Control Flow Functions,"Integrated Project: Clustering Data to Unveil Maji Ndogo's Water Crisis (Part 2)
+Graded Test: Integrated Project - Maji Ndogo - Part 2"
+,Week 8,SQL Advanced  Concepts,Check Your Understanding: SQL-Advanced Concepts,Graded Test: Advanced SQL Concepts and Database Design
+,,Integrated Project - Maji Ndogo - Part 3,Integrated Project - Maji Ndogo - Part 3,"Integrated Project: Weaving the Data Threads of Maji Ndogo's Narrative (Part 3)
+Graded Test: Integrated Project - Maji Ndogo - Part 3"
+,Week 9,Integrated Project - Maji Ndogo - Part 4,End of Module: Integrated Project - Maji Ndogo - Part 4,"Integrated Project: Charting the Course for Maji Ndogo's Water Future (Part 4)
+Graded Test: Integrated Project - Maji Ndogo - Part 4"
+,Week 10,Final Exam and Course Completion,End of Module: Final Exam,Graded Exam: SQL Exam - The Movie Database
+,,,,
+DA-4: Power BI for Data Analytics,Week 11,Introduction to Power BI for Data Analytics,,
+,,Visual Data Analytics and Reporting,Check Your Understanding: Creating Visuals in PowerBI,"Integrated Project: Visualizing Maji Ndogo’s Past (Part 1)
+Graded Test: Visualizing Maji Ndogo’s Past - Part 1"
+,Week 12,Data Modeling and Transformation,Check Your Understanding: Data Transformations in PowerBI,"Integrated Project: Moulding Data into Visual Stories in Maji Ndogo (Part 2)
+Graded Test: Moulding Data into Visual Stories in Maji Ndogo - Part 2"
+,Week 13,Calculations and Aggregations with DAX,,
+,,Exploratory Data Analysis and Dashboard Design,Check Your Understanding: Exploratory Data Analysis in Power BI,"Integrated Project: Communicating Our Findings in Maji Ndogo (Part 3)
+Graded Test - Communicating Our Findings in Maji Ndogo - Part 3"
+,Week 14,Course Completion,End of Module: Course Completion,"Integrated project: Transparency in Tracking Maji Ndogo's Water Funds (Part 4)
+Graded Test: Transparency in Tracking Maji Ndogo's Water Funds - Part 4"
