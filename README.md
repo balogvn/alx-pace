@@ -6,6 +6,7 @@ no login — everything lives in the browser. Styled after **alxafrica.com**'s l
 brand system.
 
 <p>
+  <a href="https://github.com/balogvn/alx-pace/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/balogvn/alx-pace/actions/workflows/ci.yml/badge.svg"></a>
   <img alt="React" src="https://img.shields.io/badge/React-18-149ECA?logo=react&logoColor=white">
   <img alt="Vite" src="https://img.shields.io/badge/Vite-5-646CFF?logo=vite&logoColor=white">
   <img alt="Tailwind" src="https://img.shields.io/badge/Tailwind-3-06B6D4?logo=tailwindcss&logoColor=white">
@@ -63,7 +64,9 @@ machine — no AI, no guessing, same bytes → same model every time.
   DA Self-Pace curriculum. Learners never see a file input.
 - **Build-time bundling:** the CSV is imported with Vite's `?raw` suffix
   ([`src/lib/schedule.js`](src/lib/schedule.js)) so it is compiled straight into the
-  bundle — no runtime `fetch`, works fully offline.
+  bundle — the curriculum data needs no runtime `fetch` and is never missing or
+  stale. (The Poppins typeface loads from Google Fonts with a system-font
+  fallback, so the app remains fully functional without it.)
 - **RFC 4180 parser** ([`src/lib/csvParser.js`](src/lib/csvParser.js)) handles the
   messy realities of a spreadsheet export: quoted cells containing commas and
   **newlines** (the Integrated Projects span two lines), escaped `""`, and mixed
@@ -135,7 +138,7 @@ src/
 ## Branding
 
 Design tokens sampled from the live **alxafrica.com** site (July 2026), typeface
-**Poppins**:
+**Poppins** (via Google Fonts, with a system-sans fallback):
 
 | Token | Hex | Use |
 | --- | --- | --- |
