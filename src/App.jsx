@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import { SCHEDULE, getWeek } from './lib/schedule'
 import { computePacing, progressPercent } from './lib/pacing'
+import { computePaceStatus } from './lib/paceStatus'
 import { useLearnerProfile } from './hooks/useLearnerProfile'
 import { useTheme } from './hooks/useTheme'
 
 import AlxLogo from './components/AlxLogo'
+import PaceStatusCard from './components/PaceStatusCard'
 import PersonalizationWidget from './components/PersonalizationWidget'
 import ProgressBar from './components/ProgressBar'
 import CurrentFocusCard from './components/CurrentFocusCard'
@@ -57,6 +59,23 @@ export default function App() {
 
   const { status } = pacing
 
+  const paceStatus = useMemo(
+    () => computePaceStatus(SCHEDULE, completedSet, pacing),
+    [completedSet, pacing],
+  )
+
+  // Installed-app icon badge: how many items are left in the current week.
+  // Supported on Android/desktop Chromium and iOS 16.4+ home-screen apps;
+  // silently a no-op everywhere else.
+  useEffect(() => {
+    if (typeof navigator === 'undefined' || !('setAppBadge' in navigator)) return
+    const left = status === 'active' && currentWeek
+      ? currentWeek.lessons.filter((l) => !completedSet.has(l.id)).length
+      : 0
+    if (left > 0) navigator.setAppBadge(left).catch(() => {})
+    else navigator.clearAppBadge?.().catch(() => {})
+  }, [status, currentWeek, completedSet])
+
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-lg flex-col px-4 pb-6 pt-5 sm:px-5">
       {/* Brand bar */}
@@ -81,6 +100,9 @@ export default function App() {
           onUpdateName={updateName}
           onUpdateStartDate={updateStartDate}
         />
+
+        {/* Where-you're-at message: behind / on-track / ahead + daily quote */}
+        {status === 'active' && <PaceStatusCard paceStatus={paceStatus} today={today} />}
 
         {/* State machine: onboarding → future → active → completed */}
         {status === 'no-start-date' && <StartDatePrompt onSetStartDate={updateStartDate} />}
