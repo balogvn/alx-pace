@@ -54,6 +54,22 @@ no-start-date  →  future (countdown)  →  active (week 1..14)  →  completed
 
 ---
 
+## 📱 Install on your phone
+
+The app is a **PWA** — visiting the live URL once is enough to install it like a
+native app (standalone window, ALX home-screen icon, works offline afterwards):
+
+- **Android (Chrome)**: open the app → tap the **⋮** menu → **Add to Home screen**
+  (or tap the **Install app** prompt when it appears).
+- **iPhone/iPad (Safari)**: open the app → tap **Share** (□↑) → **Add to Home
+  Screen** → **Add**.
+- **Desktop (Chrome/Edge)**: click the install icon in the address bar.
+
+Progress is stored on the device, so the installed app picks up exactly where the
+browser left off.
+
+---
+
 ## How the data works (deterministic by design)
 
 This project applies the **Deterministic Tool & Data Normalization** principle: the
