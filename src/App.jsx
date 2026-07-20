@@ -4,6 +4,7 @@ import { computePacing, progressPercent } from './lib/pacing'
 import { computePaceStatus } from './lib/paceStatus'
 import { saveReminderState } from './lib/reminderStore'
 import { trackAppOpen, trackPacingDaily } from './lib/analytics'
+import { useLang } from './i18n/LanguageContext'
 import { useLearnerProfile } from './hooks/useLearnerProfile'
 import { useTheme } from './hooks/useTheme'
 
@@ -20,6 +21,7 @@ import StartDatePrompt from './components/StartDatePrompt'
 import Footer from './components/Footer'
 
 export default function App() {
+  const { t } = useLang()
   const { theme, toggle: toggleTheme } = useTheme()
   const {
     learnerName,
@@ -74,19 +76,19 @@ export default function App() {
     trackPacingDaily(paceStatus)
   }, [paceStatus])
 
-  // Mirror a pre-composed reminder message into IndexedDB so the service
-  // worker can show it as a notification while the app is closed.
+  // Mirror a pre-composed reminder message into IndexedDB (in the learner's
+  // language) so the service worker can show it while the app is closed.
   useEffect(() => {
     if (status !== 'active' || !paceStatus) return
     const s = paceStatus
     const body =
       s.status === 'behind'
-        ? `${s.behindCount} ${s.behindCount === 1 ? 'lesson' : 'lessons'} to catch up · ${s.gradedLeft} graded due this week.`
+        ? t.reminderBehind(s.behindCount, s.gradedLeft)
         : s.gradedLeft > 0
-          ? `${s.gradedLeft} graded ${s.gradedLeft === 1 ? 'item' : 'items'} due this week — keep your pace.`
-          : `You're on track — ${s.weekTotal - s.weekDone} ${s.weekTotal - s.weekDone === 1 ? 'lesson' : 'lessons'} left this week.`
-    saveReminderState({ title: `ALX Pace — Week ${s.week} of ${s.totalWeeks}`, body })
-  }, [status, paceStatus])
+          ? t.reminderGraded(s.gradedLeft)
+          : t.reminderOnTrack(s.weekTotal - s.weekDone)
+    saveReminderState({ title: t.reminderTitle(s.week, s.totalWeeks), body })
+  }, [status, paceStatus, t])
 
   // Installed-app icon badge: how many items are left in the current week.
   // Supported on Android/desktop Chromium and iOS 16.4+ home-screen apps;
@@ -106,14 +108,12 @@ export default function App() {
       <header className="mb-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <AlxLogo className="h-7 w-auto text-ink dark:text-paper" />
-          <div className="border-l border-ink/15 pl-3 leading-none dark:border-white/20">
+          <div className="border-s border-ink/15 ps-3 leading-none dark:border-white/20">
             <p className="text-sm font-bold tracking-tight">Pace</p>
-            <p className="text-[11px] font-medium text-ink-mute dark:text-paper/70">
-              Data Analytics · Self-Pace
-            </p>
+            <p className="text-[11px] font-medium text-ink-mute dark:text-paper/70">{t.tagline}</p>
           </div>
         </div>
-        <span className="alx-chip bg-lime-300 text-navy-900">14-Week Track</span>
+        <span className="alx-chip bg-lime-300 text-navy-900">{t.trackChip}</span>
       </header>
 
       <main className="animate-fade-up space-y-4">

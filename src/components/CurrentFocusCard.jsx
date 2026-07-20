@@ -1,11 +1,13 @@
 import { Target } from 'lucide-react'
 import LessonRow from './LessonRow'
+import { useLang } from '../i18n/LanguageContext'
 
 /**
  * "This Week's Focus" — the exact Module, Week and lessons the learner should
  * be working on right now, with inline checkboxes.
  */
 export default function CurrentFocusCard({ week, completedSet, onToggle }) {
+  const { t } = useLang()
   if (!week) return null
 
   const done = week.lessons.filter((l) => completedSet.has(l.id)).length
@@ -14,7 +16,7 @@ export default function CurrentFocusCard({ week, completedSet, onToggle }) {
   return (
     <section
       className="relative overflow-hidden rounded-2xl border-2 border-lime bg-white p-4 shadow-glow dark:bg-navy-900"
-      aria-label={`This week's focus: ${week.weekLabel}`}
+      aria-label={t.focusAria(week.weekLabel)}
     >
       <div className="mb-3 flex items-start justify-between gap-3">
         <div className="flex items-center gap-2.5">
@@ -23,10 +25,12 @@ export default function CurrentFocusCard({ week, completedSet, onToggle }) {
           </span>
           <div className="min-w-0">
             <p className="text-xs font-bold uppercase tracking-widest text-cobalt-600 dark:text-lime">
-              This Week's Focus
+              {t.focusEyebrow}
             </p>
             <h2 className="truncate text-base font-bold leading-tight">
-              {week.weekLabel} · {week.moduleCode}
+              <span dir="ltr">
+                {week.weekLabel} · {week.moduleCode}
+              </span>
             </h2>
           </div>
         </div>
@@ -35,7 +39,9 @@ export default function CurrentFocusCard({ week, completedSet, onToggle }) {
         </span>
       </div>
 
-      <p className="mb-3 text-sm font-medium text-ink-soft dark:text-paper/75">{week.moduleTitle}</p>
+      <p dir="ltr" className="mb-3 text-start text-sm font-medium text-ink-soft dark:text-paper/75">
+        {week.moduleTitle}
+      </p>
 
       <ul className="-mx-1 space-y-0.5">
         {week.lessons.map((lesson) => (

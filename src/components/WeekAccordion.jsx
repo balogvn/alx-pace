@@ -1,12 +1,14 @@
 import { useState } from 'react'
 import { CheckCircle2, ChevronDown, CircleDot, ListChecks } from 'lucide-react'
 import LessonRow from './LessonRow'
+import { useLang } from '../i18n/LanguageContext'
 
 /**
  * Full curriculum browser: every module → week → lesson, collapsible, with the
  * learner's current week expanded and flagged by default.
  */
 export default function WeekAccordion({ schedule, completedSet, currentWeek, onToggle, onSetWeek }) {
+  const { t } = useLang()
   const [openWeeks, setOpenWeeks] = useState(() => new Set([currentWeek]))
 
   const toggleWeek = (weekNumber) => {
@@ -19,10 +21,10 @@ export default function WeekAccordion({ schedule, completedSet, currentWeek, onT
   }
 
   return (
-    <section aria-label="Full curriculum" className="space-y-5">
+    <section aria-label={t.fullCurriculumAria} className="space-y-5">
       <div className="flex items-center gap-2 px-1">
         <ListChecks size={18} className="text-cobalt-600 dark:text-lime" aria-hidden="true" />
-        <h2 className="text-sm font-bold uppercase tracking-wide">Full 14-Week Roadmap</h2>
+        <h2 className="text-sm font-bold uppercase tracking-wide">{t.roadmapTitle}</h2>
       </div>
 
       {schedule.modules.map((module) => (
@@ -30,12 +32,12 @@ export default function WeekAccordion({ schedule, completedSet, currentWeek, onT
           <div className="flex items-baseline justify-between gap-2 px-1">
             <h3 className="text-sm font-bold">
               <span className="text-cobalt-600 dark:text-lime">{module.code}</span>{' '}
-              <span className="text-ink dark:text-paper">{module.title}</span>
+              <span dir="ltr" className="text-ink dark:text-paper">
+                {module.title}
+              </span>
             </h3>
             <span className="flex-none text-xs font-medium text-ink-mute dark:text-paper/65">
-              {module.weekStart === module.weekEnd
-                ? `Week ${module.weekStart}`
-                : `Weeks ${module.weekStart}–${module.weekEnd}`}
+              {t.weekRange(module.weekStart, module.weekEnd)}
             </span>
           </div>
 
@@ -57,7 +59,7 @@ export default function WeekAccordion({ schedule, completedSet, currentWeek, onT
                   onClick={() => toggleWeek(week.week)}
                   aria-expanded={isOpen}
                   aria-controls={panelId}
-                  className="flex w-full items-center gap-3 p-3.5 text-left"
+                  className="flex w-full items-center gap-3 p-3.5 text-start"
                 >
                   <span
                     className={`flex h-8 w-8 flex-none items-center justify-center rounded-lg text-xs font-bold ${
@@ -73,16 +75,16 @@ export default function WeekAccordion({ schedule, completedSet, currentWeek, onT
 
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
-                      <p className="truncate text-sm font-bold">{week.weekLabel}</p>
+                      <p className="truncate text-sm font-bold">{t.weekRange(week.week, week.week)}</p>
                       {isCurrent && (
                         <span className="alx-chip flex-none bg-lime-300 text-navy-900">
-                          <CircleDot size={11} aria-hidden="true" /> Current
+                          <CircleDot size={11} aria-hidden="true" /> {t.current}
                         </span>
                       )}
                     </div>
                     <p className="truncate text-xs text-ink-soft dark:text-paper/70">
-                      {done}/{total} done
-                      {week.gradedItems.length > 0 && ` · ${week.gradedItems.length} graded`}
+                      {t.doneCount(done, total)}
+                      {week.gradedItems.length > 0 && ` · ${t.gradedCount(week.gradedItems.length)}`}
                     </p>
                   </div>
 
@@ -113,7 +115,7 @@ export default function WeekAccordion({ schedule, completedSet, currentWeek, onT
                         onClick={() => onSetWeek(week.lessons.map((l) => l.id), !allDone)}
                         className="inline-flex min-h-[44px] items-center rounded-lg px-3 text-xs font-semibold text-cobalt-600 hover:bg-cobalt/10 dark:text-lime dark:hover:bg-lime/10"
                       >
-                        {allDone ? 'Clear this week' : 'Mark week complete'}
+                        {allDone ? t.clearWeek : t.markWeekComplete}
                       </button>
                     </div>
                   </div>

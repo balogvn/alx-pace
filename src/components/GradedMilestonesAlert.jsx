@@ -1,11 +1,13 @@
 import { AlertTriangle, CheckCircle2 } from 'lucide-react'
 import GradedBadge from './GradedBadge'
+import { useLang } from '../i18n/LanguageContext'
 
 /**
  * Prominently surfaces any Evaluation Quizzes / Graded Tests / Integrated
  * Projects due during the current week.
  */
 export default function GradedMilestonesAlert({ week, completedSet }) {
+  const { t } = useLang()
   if (!week) return null
   const items = week.gradedItems || []
 
@@ -17,9 +19,7 @@ export default function GradedMilestonesAlert({ week, completedSet }) {
           className="flex-none text-alxgreen-700 dark:text-alxgreen"
           aria-hidden="true"
         />
-        <p className="text-sm font-medium">
-          No graded milestones this week — a great window to get ahead or reinforce the fundamentals.
-        </p>
+        <p className="text-sm font-medium">{t.milestonesNone}</p>
       </section>
     )
   }
@@ -27,7 +27,7 @@ export default function GradedMilestonesAlert({ week, completedSet }) {
   return (
     <section
       className="overflow-hidden rounded-2xl border-2 border-violet/30 bg-violet/5 p-4"
-      aria-label="Graded milestones due this week"
+      aria-label={t.milestonesAria}
     >
       <div className="mb-3 flex items-center gap-2">
         <span className="flex h-8 w-8 flex-none items-center justify-center rounded-lg bg-violet text-white">
@@ -35,10 +35,10 @@ export default function GradedMilestonesAlert({ week, completedSet }) {
         </span>
         <div>
           <h2 className="text-sm font-bold uppercase tracking-wide text-violet-700 dark:text-violet-300">
-            Graded Milestones
+            {t.milestonesTitle}
           </h2>
           <p className="text-xs text-ink-soft dark:text-paper/70">
-            {items.length} due in {week.weekLabel} — these count toward your grade.
+            {t.milestonesDue(items.length, week.weekLabel)}
           </p>
         </div>
       </div>
@@ -53,11 +53,14 @@ export default function GradedMilestonesAlert({ week, completedSet }) {
             >
               <GradedBadge type={lesson.gradedType} className="mt-0.5 flex-none" />
               <div className="min-w-0 flex-1">
-                <p className={`text-sm font-semibold leading-snug ${done ? 'line-through opacity-60' : ''}`}>
+                <p
+                  dir="ltr"
+                  className={`text-start text-sm font-semibold leading-snug ${done ? 'line-through opacity-60' : ''}`}
+                >
                   {lesson.graded?.title || lesson.title}
                 </p>
                 {lesson.graded?.subtitle && (
-                  <p className="mt-0.5 text-xs text-ink-soft dark:text-paper/70">
+                  <p dir="ltr" className="mt-0.5 text-start text-xs text-ink-soft dark:text-paper/70">
                     {lesson.graded.subtitle}
                   </p>
                 )}
@@ -66,7 +69,7 @@ export default function GradedMilestonesAlert({ week, completedSet }) {
                 <CheckCircle2
                   size={18}
                   className="mt-0.5 flex-none text-alxgreen-700 dark:text-alxgreen"
-                  aria-label="Completed"
+                  aria-label={t.completed}
                 />
               )}
             </li>

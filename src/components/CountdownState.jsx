@@ -1,8 +1,10 @@
 import { CalendarClock, Sparkles } from 'lucide-react'
 import { sloganForWeek } from '../lib/slogans'
+import { useLang } from '../i18n/LanguageContext'
 
 /** Shown when the learner's start date is in the future. */
 export default function CountdownState({ pacing, firstWeek }) {
+  const { t, lang } = useLang()
   const days = pacing.daysUntilStart
   return (
     <section className="alx-card border-cobalt/25 text-center">
@@ -10,25 +12,22 @@ export default function CountdownState({ pacing, firstWeek }) {
         <CalendarClock size={28} strokeWidth={2.25} aria-hidden="true" />
       </div>
       <p className="text-xs font-bold uppercase tracking-widest text-cobalt-600 dark:text-lime">
-        Get Ready
+        {t.getReady}
       </p>
       <h2 className="mt-1 text-2xl font-bold">
-        Course begins in{' '}
-        <span className="text-cobalt-600 dark:text-lime">
-          {days} {days === 1 ? 'day' : 'days'}
-        </span>
+        {t.beginsIn}{' '}
+        <span className="text-cobalt-600 dark:text-lime">{t.beginsInDays(days)}</span>
       </h2>
       <p className="mx-auto mt-2 max-w-sm text-sm text-ink-soft dark:text-paper/75">
-        Your 14-week Data Analytics journey is queued up. {sloganForWeek(1)} — the countdown is part
-        of the grind.
+        {t.countdownBody(sloganForWeek(1, lang))}
       </p>
 
       {firstWeek && (
-        <div className="mt-4 rounded-xl bg-tint p-3 text-left dark:bg-white/5">
+        <div className="mt-4 rounded-xl bg-tint p-3 text-start dark:bg-white/5">
           <p className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-ink-soft dark:text-paper/75">
-            <Sparkles size={13} aria-hidden="true" /> First up · {firstWeek.weekLabel}
+            <Sparkles size={13} aria-hidden="true" /> {t.firstUp(firstWeek.weekLabel)}
           </p>
-          <p className="mt-1 text-sm font-semibold">
+          <p dir="ltr" className="mt-1 text-start text-sm font-semibold">
             {firstWeek.moduleCode}: {firstWeek.moduleTitle}
           </p>
           <ul className="mt-1.5 space-y-1 text-sm text-ink-soft dark:text-paper/75">
@@ -37,7 +36,9 @@ export default function CountdownState({ pacing, firstWeek }) {
                 <span className="text-cobalt-600 dark:text-lime" aria-hidden="true">
                   •
                 </span>
-                <span className="min-w-0">{l.title}</span>
+                <span dir="ltr" className="min-w-0 text-start">
+                  {l.title}
+                </span>
               </li>
             ))}
           </ul>

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { CalendarPlus, Rocket } from 'lucide-react'
 import { toISODateString } from '../lib/pacing'
+import { useLang } from '../i18n/LanguageContext'
 
 /**
  * Onboarding fallback shown when no start date is set yet. Defensive guardrail:
@@ -8,6 +9,7 @@ import { toISODateString } from '../lib/pacing'
  * one to unlock pacing.
  */
 export default function StartDatePrompt({ onSetStartDate }) {
+  const { t } = useLang()
   const today = toISODateString(new Date())
   const [value, setValue] = useState(today)
 
@@ -16,11 +18,8 @@ export default function StartDatePrompt({ onSetStartDate }) {
       <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-cobalt/10 text-cobalt-600 dark:bg-lime/15 dark:text-lime">
         <Rocket size={28} strokeWidth={2.25} aria-hidden="true" />
       </div>
-      <h2 className="text-lg font-bold">Set your course start date</h2>
-      <p className="mx-auto mt-1 max-w-sm text-sm text-ink-soft dark:text-paper/75">
-        Tell us when you started (or plan to start) and we'll pace the full 14-week Data Analytics
-        track for you — week by week, no login needed.
-      </p>
+      <h2 className="text-lg font-bold">{t.promptTitle}</h2>
+      <p className="mx-auto mt-1 max-w-sm text-sm text-ink-soft dark:text-paper/75">{t.promptBody}</p>
 
       <div className="mx-auto mt-4 flex max-w-sm flex-col gap-2 sm:flex-row">
         <input
@@ -28,7 +27,7 @@ export default function StartDatePrompt({ onSetStartDate }) {
           value={value}
           onChange={(e) => setValue(e.target.value)}
           className="flex-1 rounded-xl border border-ink/20 bg-white px-3 py-2.5 text-ink outline-none focus:border-cobalt dark:border-white/20 dark:bg-navy-950 dark:text-paper dark:focus:border-lime dark:[color-scheme:dark]"
-          aria-label="Course start date"
+          aria-label={t.courseStartDate}
         />
         <button
           type="button"
@@ -37,7 +36,7 @@ export default function StartDatePrompt({ onSetStartDate }) {
           className="tap-target inline-flex items-center justify-center gap-2 rounded-xl bg-cobalt px-4 py-2.5 font-bold text-white transition-transform hover:brightness-110 active:scale-[0.98] disabled:opacity-50"
         >
           <CalendarPlus size={18} aria-hidden="true" />
-          Start pacing
+          {t.startPacing}
         </button>
       </div>
       <button
@@ -45,7 +44,7 @@ export default function StartDatePrompt({ onSetStartDate }) {
         onClick={() => onSetStartDate(today)}
         className="mt-2 inline-flex min-h-[44px] items-center px-4 text-xs font-semibold text-cobalt-600 hover:underline dark:text-lime"
       >
-        I started today
+        {t.startedToday}
       </button>
     </section>
   )

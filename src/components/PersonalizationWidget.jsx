@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { CalendarDays, Check, Flame, Pencil, Rocket, X } from 'lucide-react'
 import { sloganForWeek } from '../lib/slogans'
 import { toISODateString } from '../lib/pacing'
+import { useLang } from '../i18n/LanguageContext'
 
 import portrait1 from '../assets/alx/banner-img1.webp'
 import portrait2 from '../assets/alx/banner-img2.webp'
@@ -26,6 +27,7 @@ export default function PersonalizationWidget({
   onUpdateName,
   onUpdateStartDate,
 }) {
+  const { t, lang } = useLang()
   const [editingName, setEditingName] = useState(false)
   const [editingDate, setEditingDate] = useState(false)
   const [nameDraft, setNameDraft] = useState('')
@@ -59,7 +61,7 @@ export default function PersonalizationWidget({
   }
 
   const week = pacing.currentWeek
-  const slogan = sloganForWeek(week)
+  const slogan = sloganForWeek(week, lang)
   const showWeekLine = pacing.status === 'active'
 
   const todayIso = toISODateString(new Date())
@@ -67,15 +69,15 @@ export default function PersonalizationWidget({
   return (
     <section
       className="relative overflow-hidden rounded-2xl bg-navy-900 p-5 text-paper shadow-card"
-      aria-label="Your profile"
+      aria-label="ALX Pace"
     >
       {/* Brand glows, echoing the site hero */}
       <div
-        className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-cobalt/30 blur-3xl"
+        className="pointer-events-none absolute -end-10 -top-10 h-40 w-40 rounded-full bg-cobalt/30 blur-3xl"
         aria-hidden="true"
       />
       <div
-        className="pointer-events-none absolute -bottom-12 -left-8 h-36 w-36 rounded-full bg-lime/15 blur-3xl"
+        className="pointer-events-none absolute -bottom-12 -start-8 h-36 w-36 rounded-full bg-lime/15 blur-3xl"
         aria-hidden="true"
       />
 
@@ -93,14 +95,14 @@ export default function PersonalizationWidget({
                 if (e.key === 'Escape') setEditingName(false)
               }}
               className="w-full rounded-xl border border-white/25 bg-white/10 px-3 py-1.5 text-lg font-bold text-white placeholder-white/40 outline-none focus:border-lime"
-              placeholder="Your name"
-              aria-label="Edit your name"
+              placeholder={t.yourName}
+              aria-label={t.editName}
             />
             <button
               type="button"
               onClick={commitName}
               className="tap-target flex items-center justify-center rounded-xl bg-lime px-2 text-navy-900"
-              aria-label="Save name"
+              aria-label={t.saveName}
             >
               <Check size={18} strokeWidth={3} />
             </button>
@@ -108,7 +110,7 @@ export default function PersonalizationWidget({
               type="button"
               onClick={() => setEditingName(false)}
               className="tap-target flex items-center justify-center rounded-xl bg-white/10 px-2 text-white"
-              aria-label="Cancel"
+              aria-label={t.cancel}
             >
               <X size={18} strokeWidth={3} />
             </button>
@@ -116,14 +118,16 @@ export default function PersonalizationWidget({
         ) : (
           <div className="flex items-start justify-between gap-2">
             <h1 className="text-xl font-bold leading-tight sm:text-2xl">
-              Welcome back, <span className="text-lime">{learnerName}</span>!{' '}
+              {t.welcomeBack(learnerName)}
+              <span className="text-lime">{learnerName}</span>
+              {t.welcomeBackAfterName}{' '}
               <Rocket className="inline h-5 w-5 -translate-y-0.5" aria-hidden="true" />
             </h1>
             <button
               type="button"
               onClick={openNameEditor}
-              className="tap-target -mr-1 -mt-1 flex flex-none items-center justify-center rounded-xl text-white/70 hover:text-lime"
-              aria-label="Edit your name"
+              className="tap-target -me-1 -mt-1 flex flex-none items-center justify-center rounded-xl text-white/70 hover:text-lime"
+              aria-label={t.editName}
             >
               <Pencil size={16} />
             </button>
@@ -134,9 +138,7 @@ export default function PersonalizationWidget({
         {showWeekLine && (
           <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-lime-300 px-3 py-1.5 text-sm font-semibold text-navy-900">
             <Flame size={15} aria-hidden="true" />
-            <span>
-              Week {week} — {slogan}!
-            </span>
+            <span>{t.weekSlogan(week, slogan)}</span>
           </div>
         )}
 
@@ -155,13 +157,13 @@ export default function PersonalizationWidget({
                   if (e.key === 'Escape') setEditingDate(false)
                 }}
                 className="flex-1 rounded-xl border border-white/25 bg-white/10 px-2 py-1.5 text-white outline-none focus:border-lime [color-scheme:dark]"
-                aria-label="Edit your course start date"
+                aria-label={t.editStartDate}
               />
               <button
                 type="button"
                 onClick={commitDate}
                 className="tap-target flex items-center justify-center rounded-xl bg-lime px-2 text-navy-900"
-                aria-label="Save start date"
+                aria-label={t.saveStartDate}
               >
                 <Check size={16} strokeWidth={3} />
               </button>
@@ -169,7 +171,7 @@ export default function PersonalizationWidget({
                 type="button"
                 onClick={() => setEditingDate(false)}
                 className="tap-target flex items-center justify-center rounded-xl bg-white/10 px-2 text-white"
-                aria-label="Cancel"
+                aria-label={t.cancel}
               >
                 <X size={16} strokeWidth={3} />
               </button>
@@ -180,9 +182,11 @@ export default function PersonalizationWidget({
               onClick={openDateEditor}
               className="group inline-flex min-h-[44px] items-center gap-1.5 rounded-md hover:text-lime"
             >
-              <span>{startDate ? `Started ${formatHuman(startDate)}` : 'Set your start date'}</span>
+              <span>{startDate ? t.started(formatHuman(startDate, t.locale)) : t.setStartDate}</span>
               <Pencil size={13} className="opacity-70 group-hover:opacity-100" aria-hidden="true" />
-              {!startDate && <span className="ml-1 text-white/60">(today: {formatHuman(todayIso)})</span>}
+              {!startDate && (
+                <span className="ms-1 text-white/60">{t.todayHint(formatHuman(todayIso, t.locale))}</span>
+              )}
             </button>
           )}
         </div>
@@ -198,9 +202,9 @@ export default function PersonalizationWidget({
               className={`h-12 w-12 flex-none rounded-xl object-cover ${i > 2 ? 'hidden sm:block' : ''}`}
             />
           ))}
-          <div className="hidden flex-1 items-center justify-end pr-1 sm:flex">
+          <div className="hidden flex-1 items-center justify-end pe-1 sm:flex">
             <span className="text-[11px] font-medium uppercase tracking-widest text-white/50">
-              Do Hard Things
+              {t.doHardThings}
             </span>
           </div>
         </div>
@@ -209,9 +213,9 @@ export default function PersonalizationWidget({
   )
 }
 
-function formatHuman(iso) {
+function formatHuman(iso, locale) {
   const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso || '')
   if (!m) return iso
   const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]))
-  return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })
+  return d.toLocaleDateString(locale, { month: 'short', day: 'numeric', year: 'numeric' })
 }

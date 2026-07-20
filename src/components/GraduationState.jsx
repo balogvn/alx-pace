@@ -1,7 +1,9 @@
 import { PartyPopper, Trophy } from 'lucide-react'
+import { useLang } from '../i18n/LanguageContext'
 
 /** Shown when the current date is past Week 14. */
 export default function GraduationState({ completedCount, totalLessons, gradedDone, totalGraded }) {
+  const { t } = useLang()
   const percent = totalLessons ? Math.round((completedCount / totalLessons) * 100) : 0
   const finished = completedCount >= totalLessons && totalLessons > 0
 
@@ -20,31 +22,29 @@ export default function GraduationState({ completedCount, totalLessons, gradedDo
           <Trophy size={32} strokeWidth={2.25} aria-hidden="true" />
         </div>
         <h2 className="text-2xl font-bold">
-          {finished ? 'Course Completed!' : 'You Reached the Finish Line!'}{' '}
+          {finished ? t.completedTitle : t.finishLineTitle}{' '}
           <PartyPopper className="inline h-6 w-6" aria-hidden="true" />
         </h2>
         <p className="mx-auto mt-2 max-w-sm text-sm text-white/80">
-          {finished
-            ? 'Every lesson checked off across all 14 weeks. That is what doing hard things looks like.'
-            : 'The 14-week timeline is complete. Wrap up any remaining items below to finish 100%.'}
+          {finished ? t.completedBody : t.finishLineBody}
         </p>
 
         <div className="mt-5 grid grid-cols-2 gap-3">
           <div className="rounded-xl bg-white/10 p-3">
             <p className="text-3xl font-bold tabular-nums text-lime">{percent}%</p>
-            <p className="text-xs text-white/70">Curriculum complete</p>
+            <p className="text-xs text-white/70">{t.curriculumComplete}</p>
           </div>
           <div className="rounded-xl bg-white/10 p-3">
             <p className="text-3xl font-bold tabular-nums text-lime">
               {gradedDone}
               <span className="text-lg text-white/60">/{totalGraded}</span>
             </p>
-            <p className="text-xs text-white/70">Graded milestones</p>
+            <p className="text-xs text-white/70">{t.gradedMilestonesStat}</p>
           </div>
         </div>
 
         <p className="mt-4 text-sm font-bold text-lime">
-          {completedCount} of {totalLessons} lessons complete
+          {t.lessonsComplete(completedCount, totalLessons)}
         </p>
       </div>
     </section>
