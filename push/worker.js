@@ -21,6 +21,24 @@ async function endpointKey(endpoint) {
   return [...new Uint8Array(hash)].map((b) => b.toString(16).padStart(2, '0')).join('')
 }
 
+// Only real browser push services may be registered — kills junk-subscription
+// flooding and stops the store being used to aim requests at arbitrary URLs.
+const ALLOWED_PUSH_HOSTS = [
+  /(^|\.)fcm\.googleapis\.com$/, // Chrome / Android
+  /(^|\.)push\.apple\.com$/, // Safari / iOS
+  /(^|\.)push\.services\.mozilla\.com$/, // Firefox
+  /(^|\.)notify\.windows\.com$/, // Edge (WNS)
+]
+
+function isRealPushService(endpoint) {
+  try {
+    const url = new URL(endpoint)
+    return url.protocol === 'https:' && ALLOWED_PUSH_HOSTS.some((re) => re.test(url.hostname))
+  } catch {
+    return false
+  }
+}
+
 export default {
   async fetch(request, env) {
     const cors = {
@@ -33,8 +51,15 @@ export default {
     const { pathname } = new URL(request.url)
 
     if (pathname === '/subscribe' && request.method === 'POST') {
-      const sub = await request.json().catch(() => null)
-      if (!sub || typeof sub.endpoint !== 'string' || !sub.endpoint.startsWith('https://')) {
+      const raw = await request.text()
+      if (raw.length > 4096) return new Response('too large', { status: 413, headers: cors })
+      let sub = null
+      try {
+        sub = JSON.parse(raw)
+      } catch {
+        /* falls through to bad request */
+      }
+      if (!sub || typeof sub.endpoint !== 'string' || !isRealPushService(sub.endpoint)) {
         return new Response('bad request', { status: 400, headers: cors })
       }
       await env.SUBS.put(await endpointKey(sub.endpoint), JSON.stringify(sub))
