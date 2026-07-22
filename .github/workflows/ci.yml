@@ -5,8 +5,19 @@ on:
     branches: [main]
   pull_request:
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: ci-${{ github.ref }}
+  # Cancel superseded PR runs, but never cancel a main-branch run mid-deploy.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   verify:
+    name: verify
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -19,11 +30,46 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # Deterministic data check: runs the production CSV parser against the
-      # bundled curriculum and asserts all 21 invariants (14 weeks, 4 modules,
-      # forward-fill integrity, stable content-derived ids, ...).
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit tests
+        run: npm test
+
+      # Deterministic data gate: 14 weeks, 4 modules, forward-fill, stable ids.
       - name: Verify curriculum parser
         run: npm run parser:check
 
       - name: Build
         run: npm run build
+
+  deploy:
+    name: deploy
+    needs: verify
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build for GitHub Pages
+        run: npm run build
+        env:
+          BASE_PATH: /alx-pace/
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -30,7 +30,7 @@ export const translations = {
     tagline: 'Data Analytics · Self-Pace',
     trackChip: '14-Week Track',
 
-    welcomeBack: (name) => `Welcome back, `,
+    welcomeBack: () => `Welcome back, `,
     welcomeBackAfterName: `!`,
     weekSlogan: (week, slogan) => `Week ${week} — ${slogan}!`,
     started: (date) => `Started ${date}`,

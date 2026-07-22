@@ -26,8 +26,14 @@ Other scripts:
 ```bash
 npm run build          # production build to dist/
 npm run preview        # serve the production build
+npm run lint           # ESLint (flat config)
+npm test               # Vitest unit tests (pacing, parser, schedule, forecast)
 npm run parser:check   # run the deterministic CSV-parser verification in Node
 ```
+
+Every push and pull request runs lint → unit tests → parser verification → build
+via [GitHub Actions](.github/workflows/ci.yml); deployment to GitHub Pages only
+runs after those gates pass on `main`.
 
 > Requires Node 18+ (developed on Node 24).
 
