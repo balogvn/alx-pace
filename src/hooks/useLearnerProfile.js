@@ -16,6 +16,11 @@ import { SCHEDULE } from '../lib/schedule'
 // invite the learner to add theirs instead of showing a generic placeholder.
 export const DEFAULT_NAME = ''
 
+// Older builds seeded this filler name (and may have persisted it on reset),
+// so returning learners still have it in storage. Treat it as "not set" so
+// they get the friendly "Your name" prompt without having to clear anything.
+const LEGACY_DEFAULT_NAME = 'ALX Tech Fellow'
+
 const KEY_NAME = 'learnerName'
 const KEY_START = 'startDate'
 const KEY_COMPLETED = 'completedLessons'
@@ -25,7 +30,9 @@ const KEY_COMPLETED = 'completedLessons'
 const VALID_IDS = new Set(SCHEDULE.lessons.map((l) => l.id))
 
 export function useLearnerProfile() {
-  const [learnerName, setLearnerName] = useLocalStorage(KEY_NAME, DEFAULT_NAME, { raw: true })
+  const [storedName, setLearnerName] = useLocalStorage(KEY_NAME, DEFAULT_NAME, { raw: true })
+  // Coerce the legacy filler to empty so the placeholder greeting shows.
+  const learnerName = storedName === LEGACY_DEFAULT_NAME ? '' : storedName
   const [startDate, setStartDate] = useLocalStorage(KEY_START, '', { raw: true })
   const [completedRaw, setCompletedRaw] = useLocalStorage(KEY_COMPLETED, [])
 
