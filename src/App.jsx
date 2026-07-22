@@ -10,6 +10,7 @@ import { useTheme } from './hooks/useTheme'
 
 import AlxLogo from './components/AlxLogo'
 import PaceStatusCard from './components/PaceStatusCard'
+import ForecastCard from './components/ForecastCard'
 import PersonalizationWidget from './components/PersonalizationWidget'
 import ProgressBar from './components/ProgressBar'
 import CurrentFocusCard from './components/CurrentFocusCard'
@@ -64,8 +65,8 @@ export default function App() {
   const { status } = pacing
 
   const paceStatus = useMemo(
-    () => computePaceStatus(SCHEDULE, completedSet, pacing),
-    [completedSet, pacing],
+    () => computePaceStatus(SCHEDULE, completedSet, pacing, today),
+    [completedSet, pacing, today],
   )
 
   // Anonymous usage tallies (no-ops until GOATCOUNTER_SITE is configured).
@@ -149,6 +150,7 @@ export default function App() {
 
         {status === 'active' && (
           <>
+            <ForecastCard paceStatus={paceStatus} />
             <CurrentFocusCard week={currentWeek} completedSet={completedSet} onToggle={toggleLesson} />
             <GradedMilestonesAlert week={currentWeek} completedSet={completedSet} />
           </>

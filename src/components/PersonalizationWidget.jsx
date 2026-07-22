@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
-import { CalendarDays, Check, Flame, Pencil, Rocket, X } from 'lucide-react'
+import { CalendarCheck, CalendarDays, Check, Flame, Pencil, Rocket, X } from 'lucide-react'
 import { sloganForWeek } from '../lib/slogans'
-import { toISODateString } from '../lib/pacing'
+import { plannedEndDate, toISODateString } from '../lib/pacing'
+import { formatHumanDate } from '../lib/formatDate'
 import { useLang } from '../i18n/LanguageContext'
 
 import portrait1 from '../assets/alx/banner-img1.webp'
@@ -65,6 +66,9 @@ export default function PersonalizationWidget({
   const showWeekLine = pacing.status === 'active'
 
   const todayIso = toISODateString(new Date())
+  const isPlaceholderName = !learnerName?.trim()
+  // Live-preview the finish date from whichever date is relevant right now.
+  const finishDate = plannedEndDate(editingDate ? dateDraft : startDate)
 
   return (
     <section
@@ -118,18 +122,29 @@ export default function PersonalizationWidget({
         ) : (
           <div className="flex items-start justify-between gap-2">
             <h1 className="text-xl font-bold leading-tight sm:text-2xl">
-              {t.welcomeBack(learnerName)}
-              <span className="text-lime">{learnerName}</span>
+              {t.welcomeBack()}
+              {isPlaceholderName ? (
+                <button
+                  type="button"
+                  onClick={openNameEditor}
+                  className="text-lime underline decoration-dashed decoration-1 underline-offset-4 hover:decoration-solid"
+                >
+                  {t.yourName}
+                </button>
+              ) : (
+                <span className="text-lime">{learnerName}</span>
+              )}
               {t.welcomeBackAfterName}{' '}
               <Rocket className="inline h-5 w-5 -translate-y-0.5" aria-hidden="true" />
             </h1>
             <button
               type="button"
               onClick={openNameEditor}
-              className="tap-target -me-1 -mt-1 flex flex-none items-center justify-center rounded-xl text-white/70 hover:text-lime"
+              className="tap-target -me-1 -mt-1 flex flex-none items-center gap-1 rounded-xl px-1.5 text-xs font-semibold text-white/70 hover:text-lime"
               aria-label={t.editName}
             >
-              <Pencil size={16} />
+              <Pencil size={15} aria-hidden="true" />
+              {t.edit}
             </button>
           </div>
         )}
@@ -183,13 +198,24 @@ export default function PersonalizationWidget({
               className="group inline-flex min-h-[44px] items-center gap-1.5 rounded-md hover:text-lime"
             >
               <span>{startDate ? t.started(formatHuman(startDate, t.locale)) : t.setStartDate}</span>
-              <Pencil size={13} className="opacity-70 group-hover:opacity-100" aria-hidden="true" />
+              <span className="inline-flex items-center gap-0.5 text-xs font-semibold opacity-70 group-hover:opacity-100">
+                <Pencil size={13} aria-hidden="true" />
+                {t.edit}
+              </span>
               {!startDate && (
                 <span className="ms-1 text-white/60">{t.todayHint(formatHuman(todayIso, t.locale))}</span>
               )}
             </button>
           )}
         </div>
+
+        {/* Auto-calculated target finish date */}
+        {finishDate && (
+          <div className="mt-2 inline-flex items-center gap-1.5 rounded-lg bg-white/10 px-2.5 py-1 text-xs font-semibold text-lime">
+            <CalendarCheck size={13} aria-hidden="true" />
+            {t.targetFinish(formatHumanDate(finishDate, t.locale))}
+          </div>
+        )}
 
         {/* Duotone learner mosaic, straight from the ALX hero */}
         <div className="mt-4 flex gap-1.5" aria-hidden="true">

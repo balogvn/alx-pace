@@ -1,11 +1,14 @@
-import { CalendarClock, Sparkles } from 'lucide-react'
+import { CalendarCheck, CalendarClock, Sparkles } from 'lucide-react'
 import { sloganForWeek } from '../lib/slogans'
+import { plannedEndDate } from '../lib/pacing'
+import { formatHumanDate } from '../lib/formatDate'
 import { useLang } from '../i18n/LanguageContext'
 
 /** Shown when the learner's start date is in the future. */
 export default function CountdownState({ pacing, firstWeek }) {
   const { t, lang } = useLang()
   const days = pacing.daysUntilStart
+  const finish = plannedEndDate(pacing.startDate)
   return (
     <section className="alx-card border-cobalt/25 text-center">
       <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-cobalt/10 text-cobalt-600 dark:bg-lime/15 dark:text-lime">
@@ -21,6 +24,13 @@ export default function CountdownState({ pacing, firstWeek }) {
       <p className="mx-auto mt-2 max-w-sm text-sm text-ink-soft dark:text-paper/75">
         {t.countdownBody(sloganForWeek(1, lang))}
       </p>
+
+      {finish && (
+        <div className="mx-auto mt-3 inline-flex items-center gap-1.5 rounded-xl bg-cobalt/10 px-3 py-1.5 text-xs font-semibold text-cobalt-600 dark:bg-lime/15 dark:text-lime">
+          <CalendarCheck size={14} className="flex-none" aria-hidden="true" />
+          {t.targetFinish(formatHumanDate(finish, lang))}
+        </div>
+      )}
 
       {firstWeek && (
         <div className="mt-4 rounded-xl bg-tint p-3 text-start dark:bg-white/5">

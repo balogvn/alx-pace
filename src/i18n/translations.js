@@ -132,6 +132,21 @@ export const translations = {
     reminderOnTrack: (left) =>
       `You're on track — ${left} ${left === 1 ? 'lesson' : 'lessons'} left this week.`,
 
+    edit: 'edit',
+    targetFinish: (date) => `Finish by ${date}`,
+    promptFinishPreview: (date) => `With this start date, you'll be done by ${date}.`,
+    yourPace: 'Your pace',
+    paceValue: (n) => `${n} lessons/week`,
+    projectedFinishLabel: 'Projected finish',
+    targetLabel: 'Target',
+    finishDelta: (days) => {
+      if (days === 0) return 'right on plan'
+      const abs = Math.abs(days)
+      const span = abs >= 14 ? `${Math.round(abs / 7)} weeks` : `${abs} ${abs === 1 ? 'day' : 'days'}`
+      return days > 0 ? `≈ ${span} ahead of plan` : `≈ ${span} behind plan`
+    },
+    noPaceYet: 'Tick off your first lesson to unlock your finish forecast.',
+
     slogans: [
       'Do Hard Things',
       'Grit in Progress',
@@ -271,6 +286,22 @@ export const translations = {
     reminderOnTrack: (left) =>
       `Tu es dans le rythme — ${frPlural(left, 'leçon restante', 'leçons restantes')} cette semaine.`,
 
+    edit: 'modifier',
+    targetFinish: (date) => `Fin prévue : ${date}`,
+    promptFinishPreview: (date) => `Avec cette date de début, tu auras terminé le ${date}.`,
+    yourPace: 'Ton rythme',
+    paceValue: (n) => `${n} leçons/semaine`,
+    projectedFinishLabel: 'Fin estimée',
+    targetLabel: 'Objectif',
+    finishDelta: (days) => {
+      if (days === 0) return 'pile dans les temps'
+      const abs = Math.abs(days)
+      const span =
+        abs >= 14 ? `${Math.round(abs / 7)} semaines` : `${abs} ${abs === 1 ? 'jour' : 'jours'}`
+      return days > 0 ? `≈ ${span} d'avance` : `≈ ${span} de retard`
+    },
+    noPaceYet: 'Coche ta première leçon pour débloquer ta date de fin estimée.',
+
     slogans: [
       'Fais des choses difficiles',
       'Le cran en action',
@@ -406,6 +437,24 @@ export const translations = {
       `${arCount(n, { one: 'تقييم محتسب مستحق', two: 'تقييمان محتسبان مستحقان', few: 'تقييمات محتسبة مستحقة', many: 'تقييمًا محتسبًا مستحقًا' })} هذا الأسبوع — حافظ على وتيرتك.`,
     reminderOnTrack: (left) =>
       `أنت على المسار الصحيح — ${arCount(left, { one: 'درس واحد متبقٍ', two: 'درسان متبقيان', few: 'دروس متبقية', many: 'درسًا متبقيًا' })} هذا الأسبوع.`,
+
+    edit: 'تعديل',
+    targetFinish: (date) => `الانتهاء بحلول ${date}`,
+    promptFinishPreview: (date) => `بهذا التاريخ، ستنتهي بحلول ${date}.`,
+    yourPace: 'وتيرتك',
+    paceValue: (n) => `${n} درس/أسبوع`,
+    projectedFinishLabel: 'الانتهاء المتوقّع',
+    targetLabel: 'الهدف',
+    finishDelta: (days) => {
+      if (days === 0) return 'تمامًا حسب الخطة'
+      const abs = Math.abs(days)
+      const span =
+        abs >= 14
+          ? `${Math.round(abs / 7)} أسابيع`
+          : arCount(abs, { one: 'يوم واحد', two: 'يومين', few: 'أيام', many: 'يومًا' })
+      return days > 0 ? `≈ متقدّم بـ ${span}` : `≈ متأخّر بـ ${span}`
+    },
+    noPaceYet: 'أكمل أول درس لك لعرض تاريخ انتهائك المتوقّع.',
 
     slogans: [
       'افعل الأشياء الصعبة',

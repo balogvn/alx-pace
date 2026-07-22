@@ -5,13 +5,16 @@ import { SCHEDULE } from '../lib/schedule'
 /**
  * Zero-login learner profile persisted entirely in localStorage.
  *
- * Storage key contract (exactly as specified):
- *   - learnerName       (string,  default "ALX Tech Fellow")
+ * Storage key contract:
+ *   - learnerName       (string, empty until the learner sets it — the UI
+ *                        shows a "Your name" placeholder rather than filler)
  *   - startDate         (ISO date string, e.g. "2026-01-15")
  *   - completedLessons  (JSON array of lesson ids)
  */
 
-export const DEFAULT_NAME = 'ALX Tech Fellow'
+// Empty by default: a blank name reads as "not set yet" so the greeting can
+// invite the learner to add theirs instead of showing a generic placeholder.
+export const DEFAULT_NAME = ''
 
 const KEY_NAME = 'learnerName'
 const KEY_START = 'startDate'
@@ -63,8 +66,7 @@ export function useLearnerProfile() {
 
   const updateName = useCallback(
     (name) => {
-      const trimmed = (name || '').trim()
-      setLearnerName(trimmed || DEFAULT_NAME)
+      setLearnerName((name || '').trim())
     },
     [setLearnerName],
   )

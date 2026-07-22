@@ -142,6 +142,18 @@ export function computePacing(startDateInput, now = new Date()) {
 }
 
 /**
+ * The planned "done by" date: the last day of Week 14 (start + 97 days,
+ * since day 1 is the start date itself). Null when no valid start date.
+ */
+export function plannedEndDate(startDateInput) {
+  const start = startDateInput instanceof Date ? startDateInput : parseISODate(startDateInput)
+  if (!start) return null
+  const end = atMidnight(start)
+  end.setDate(end.getDate() + TOTAL_WEEKS * 7 - 1)
+  return end
+}
+
+/**
  * Progress percentage from completed lesson ids.
  * @param {string[]|Set<string>} completed
  * @param {number} total

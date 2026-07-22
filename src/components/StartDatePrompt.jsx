@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { CalendarPlus, Rocket } from 'lucide-react'
-import { toISODateString } from '../lib/pacing'
+import { CalendarCheck, CalendarPlus, Rocket } from 'lucide-react'
+import { plannedEndDate, toISODateString } from '../lib/pacing'
+import { formatHumanDate } from '../lib/formatDate'
 import { useLang } from '../i18n/LanguageContext'
 
 /**
@@ -9,9 +10,10 @@ import { useLang } from '../i18n/LanguageContext'
  * one to unlock pacing.
  */
 export default function StartDatePrompt({ onSetStartDate }) {
-  const { t } = useLang()
+  const { t, lang } = useLang()
   const today = toISODateString(new Date())
   const [value, setValue] = useState(today)
+  const finish = plannedEndDate(value)
 
   return (
     <section className="alx-card border-cobalt/25 text-center">
@@ -39,6 +41,15 @@ export default function StartDatePrompt({ onSetStartDate }) {
           {t.startPacing}
         </button>
       </div>
+
+      {/* Auto-calculated end date, updates live as the date changes */}
+      {finish && (
+        <p className="mx-auto mt-3 flex max-w-sm items-center justify-center gap-1.5 rounded-xl bg-cobalt/10 px-3 py-2 text-xs font-semibold text-cobalt-600 dark:bg-lime/15 dark:text-lime">
+          <CalendarCheck size={14} className="flex-none" aria-hidden="true" />
+          {t.promptFinishPreview(formatHumanDate(finish, lang))}
+        </p>
+      )}
+
       <button
         type="button"
         onClick={() => onSetStartDate(today)}
