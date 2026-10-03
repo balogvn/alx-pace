@@ -2,7 +2,17 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
 import { LanguageProvider } from './i18n/LanguageContext'
+import { migrateLegacyProgram } from './lib/programs'
 import './index.css'
+
+// Before the first render: learners from the Data-Analytics-only era keep
+// their tracker exactly as it was (pinned to DA); new learners see the
+// program picker. Runs once — idempotent after that.
+try {
+  migrateLegacyProgram(window.localStorage)
+} catch {
+  /* storage blocked — the picker simply shows */
+}
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
